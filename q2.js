@@ -43,7 +43,7 @@ const tasks = [
     if (endSec - beginSec < 0) return acc + (endSec + 86400 - beginSec);
     return acc + (endSec - beginSec);
   }, 0);
-  console.log(answer);
+  console.log(answer / 60 / 60);
 })();
 
 /* Make a function that take as parameters dayTime and return number of employee working */
@@ -79,17 +79,18 @@ const tasks = [
   const result = employees.reduce((acc, { type }) => {
     const { work_begin, work_end } = employeeType.find(({ id }) => id === type);
     let [beginSec, endSec] = [toSeconds(work_begin), toSeconds(work_end)];
-    if (beginSec <= 32400 && endSec <= 32400) return acc;
-    if (beginSec <= 32400 && endSec <= 86400) {
+    if (beginSec < 32400 && endSec < 32400 && endSec - beginSec >= 0) {
+      return acc;
+    }
+    if (beginSec < 32400) {
       endSec = endSec - beginSec < 0 ? 86400 : endSec;
       return acc + (endSec - 32400);
     }
-    if (beginSec <= 32400 && endSec > 86400) return acc + (86400 - 32400);
-    if (beginSec > 32400 && endSec <= 86400) {
+    if (beginSec >= 32400) {
       endSec = endSec - beginSec < 0 ? 86400 : endSec;
       return acc + (endSec - beginSec);
     }
-    if (beginSec > 32400 && endSec > 86400) return acc + (86400 - beginSec);
+    return acc;
   }, 0);
   const day = (taskMinutes * 60) / result;
   console.log(day);
